@@ -11,7 +11,7 @@ from datetime import date
 from typing import Any, Dict, List, Optional
 
 from fastapi import Depends, FastAPI, HTTPException, Query, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 from pydantic import BaseModel, Field
 
 from library.config import LibraryConfig
@@ -165,6 +165,14 @@ def create_app(service: Optional[LibraryService] = None) -> FastAPI:
     # =========================================================================
     # Routes
     # =========================================================================
+
+    @app.get("/", response_class=PlainTextResponse, include_in_schema=False)
+    def welcome() -> str:
+        return (
+            "Welcome to HCLTech Library!\n"
+            "To explore the library services or test the application, visit:\n"
+            "http://127.0.0.1:8000/docs"
+        )
 
     @app.get("/config", summary="Retrieve personalized rules and parameters")
     def get_library_config(svc: LibraryService = Depends(get_service)) -> Dict[str, Any]:

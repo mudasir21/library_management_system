@@ -22,7 +22,7 @@ class Member(ABC):
         if not member_id or not name or not email:
             raise ValueError("member_id, name, and email must be non-empty strings.")
         if borrow_limit < 1:
-            raise ValueError("Borrow_limit must be at least 1.")
+            raise ValueError("borrow_limit must be at least 1.")
 
         self._member_id = member_id
         self._name = name
