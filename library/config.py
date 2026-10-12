@@ -39,5 +39,52 @@ def get_my_library_parameters(employee_id: str) -> dict:
         'fine_per_day': round(rng.uniform(1.5, 5.0), 2),
     }
 
+@dataclass(frozen=True)
+class LibraryConfig:
+    """Immutable application configuration with personalized business rules."""
 
+    employee_id: str
+    genres: List[str]
+    student_borrow_limit: int
+    staff_borrow_limit: int
+    fine_per_day: float
+    db_path: str = "library.db"
+    log_file_path: str = "library.log"
+    student_loan_days: int = 14
+    staff_loan_days: int = 28
+
+    @classmethod
+    def load(
+        cls,
+        employee_id: str | None = None,
+        db_path: str | None = None,
+        log_file_path: str | None = None,
+    ) -> LibraryConfig:
+        """Factory method to load configuration from environment or parameters.
+
+        Args:
+            employee_id: Optional employee ID. If None, uses LIBRARY_EMPLOYEE_ID or 'HCL10001'.
+            db_path: Optional SQLite database file path.
+            log_file_path: Optional log file path.
+
+        Returns:
+            LibraryConfig instance with deterministic rules populated.
+        """
+        emp_id = (
+            employee_id
+            or os.getenv("LIBRARY_EMPLOYEE_ID", "HCL10001")
+        ).strip()
+        params = get_my_library_parameters(emp_id)
+
+        return cls(
+            employee_id=emp_id,
+            genres=params['genres'],
+            student_borrow_limit=params['student_borrow_limit'],
+            staff_borrow_limit=params['staff_borrow_limit'],
+            fine_per_day=params['fine_per_day'],
+            db_path=db_path or os.getenv("LIBRARY_DB_PATH", "library.db"),
+            log_file_path=log_file_path or os.getenv("LIBRARY_LOG_PATH", "library.log"),
+            student_loan_days=int(os.getenv("LIBRARY_STUDENT_LOAN_DAYS", "14")),
+            staff_loan_days=int(os.getenv("LIBRARY_STAFF_LOAN_DAYS", "28")),
+        )
 
