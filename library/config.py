@@ -39,7 +39,6 @@ def get_my_library_parameters(employee_id: str) -> dict:
         'fine_per_day': round(rng.uniform(1.5, 5.0), 2),
     }
 
-
 @dataclass(frozen=True)
 class LibraryConfig:
     """Immutable application configuration with personalized business rules."""
@@ -88,3 +87,4 @@ class LibraryConfig:
             student_loan_days=int(os.getenv("LIBRARY_STUDENT_LOAN_DAYS", "14")),
             staff_loan_days=int(os.getenv("LIBRARY_STAFF_LOAN_DAYS", "28")),
         )
+
